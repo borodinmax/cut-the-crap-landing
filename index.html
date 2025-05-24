@@ -29,7 +29,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
 
-    <!-- Tailwind CSS (play CDN for quick start) -->
+    <!-- Tailwind CSS (play CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       body {
@@ -37,10 +37,13 @@
       }
     </style>
   </head>
-  <body class="bg-white flex items-center justify-center min-h-screen">
-    <div class="max-w-6xl w-full px-6 md:flex md:items-center md:space-x-12">
+  <body class="bg-white min-h-screen flex items-center justify-center">
+    <!-- Toast -->
+    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 bg-black text-white rounded-full px-6 py-3 text-lg font-medium opacity-0 pointer-events-none transition-opacity duration-200">Link copied</div>
+
+    <div class="max-w-6xl w-full px-6 lg:flex lg:items-center lg:space-x-12">
       <!-- Demo media -->
-      <div class="md:w-1/2 mb-10 md:mb-0">
+      <div class="lg:w-1/2 mb-10 lg:mb-0">
         <!-- Replace demo.mp4 with your gif or mp4 in /assets -->
         <video
           autoplay
@@ -55,29 +58,28 @@
       </div>
 
       <!-- Text & actions -->
-      <div class="md:w-1/2">
-        <div class="flex items-center space-x-3 mb-6">
+      <div class="lg:w-1/2 text-center lg:text-left flex flex-col items-center lg:items-start">
+        <div class="flex items-center space-x-3 mb-6 lg:justify-start justify-center">
           <img src="assets/Cut The Crap logo.png" alt="Cut The Crap logo" class="w-10 h-10" />
-          <h1 class="text-4xl md:text-5xl font-extrabold">Cut The Crap</h1>
+          <h1 class="text-[36px] font-bold whitespace-nowrap">Cut The Crap</h1>
         </div>
 
-        <p class="text-gray-500 text-lg mb-8 max-w-md">
+        <p class="text-[18px] font-medium text-black/45 mt-6 lg:max-w-md">
           Slack extension that turns ‘wait, what?’ into ‘got it’ — one message at a time.
         </p>
 
-        <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-          <!-- TODO: replace # with your real OAuth / install link -->
+        <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mt-6">
           <a
-            href="#"
+            href="#"  <!-- TODO: real install link -->
             target="_blank"
-            class="inline-flex justify-center items-center px-8 py-4 bg-black text-white font-semibold rounded-lg shadow hover:bg-gray-800 transition"
+            class="w-[160px] h-[50px] flex justify-center items-center bg-black text-white text-[18px] font-medium rounded-[12px] shadow hover:bg-gray-800 transition"
           >
             Install
           </a>
 
           <button
             id="shareBtn"
-            class="inline-flex justify-center items-center px-8 py-4 border border-gray-300 font-semibold rounded-lg hover:bg-gray-100 transition"
+            class="w-[160px] h-[50px] flex justify-center items-center border-2 border-[rgba(0,0,0,0.15)] text-[18px] font-medium rounded-[12px] hover:bg-gray-100 transition"
           >
             Share
           </button>
@@ -90,7 +92,7 @@
       id="shareModal"
       class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-200"
     >
-      <div class="bg-white rounded-xl p-8 w-80 relative">
+      <div class="bg-white rounded-xl w-64 px-6 py-12 relative">
         <button
           id="closeModal"
           class="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
@@ -108,30 +110,30 @@
           </svg>
         </button>
 
-        <ul class="space-y-6 mt-2 select-none">
+        <ul class="space-y-8 select-none">
           <li class="flex items-center space-x-4 cursor-pointer hover:opacity-80" data-share="copy">
             <img src="assets/Copy icon.png" alt="Copy link" class="w-7 h-7" />
-            <span class="text-xl font-medium">Copy link</span>
+            <span class="text-[18px] font-medium">Copy link</span>
           </li>
           <li class="flex items-center space-x-4 cursor-pointer hover:opacity-80" data-share="slack">
             <img src="assets/Slack logo.png" alt="Slack" class="w-7 h-7" />
-            <span class="text-xl font-medium">Slack</span>
+            <span class="text-[18px] font-medium">Slack</span>
           </li>
           <li class="flex items-center space-x-4 cursor-pointer hover:opacity-80" data-share="telegram">
             <img src="assets/Telegram logo.png" alt="Telegram" class="w-7 h-7" />
-            <span class="text-xl font-medium">Telegram</span>
+            <span class="text-[18px] font-medium">Telegram</span>
           </li>
           <li class="flex items-center space-x-4 cursor-pointer hover:opacity-80" data-share="facebook">
             <img src="assets/Facebook logo.png" alt="Facebook" class="w-7 h-7" />
-            <span class="text-xl font-medium">Facebook</span>
+            <span class="text-[18px] font-medium">Facebook</span>
           </li>
           <li class="flex items-center space-x-4 cursor-pointer hover:opacity-80" data-share="whatsapp">
             <img src="assets/WhatsApp logo.png" alt="WhatsApp" class="w-7 h-7" />
-            <span class="text-xl font-medium">WhatsApp</span>
+            <span class="text-[18px] font-medium">WhatsApp</span>
           </li>
           <li class="flex items-center space-x-4 cursor-pointer hover:opacity-80" data-share="x">
             <img src="assets/X logo.png" alt="X / Twitter" class="w-7 h-7" />
-            <span class="text-xl font-medium">X</span>
+            <span class="text-[18px] font-medium">X</span>
           </li>
         </ul>
       </div>
@@ -141,6 +143,7 @@
       const shareBtn = document.getElementById('shareBtn');
       const shareModal = document.getElementById('shareModal');
       const closeModal = document.getElementById('closeModal');
+      const toast = document.getElementById('toast');
 
       function openModal() {
         shareModal.classList.remove('opacity-0', 'pointer-events-none');
@@ -156,24 +159,53 @@
         if (e.target === shareModal) hideModal();
       });
 
+      // Custom toast
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.remove('opacity-0');
+        setTimeout(() => toast.classList.add('opacity-0'), 1000);
+      }
+
+      // Build share message
+      function shareMessage(url) {
+        return `CUT THE CRAP outta those monster Slack threads. Install now → ${url}`;
+      }
+
       document.querySelectorAll('#shareModal [data-share]').forEach((item) => {
         item.addEventListener('click', () => {
           const type = item.dataset.share;
           const url = window.location.href;
+          const encodedMsg = encodeURIComponent(shareMessage(url));
 
           switch (type) {
             case 'copy':
-              navigator.clipboard.writeText(url);
-              alert('Link copied!');
+              navigator.clipboard.writeText(url).then(() => {
+                showToast('Link copied');
+              });
               break;
             case 'slack':
-              window.open(
-                `https://slack.com/share?text=Check%20this%20out&url=${encodeURIComponent(url)}`,
-                '_blank'
-              );
+              try {
+                // Attempt to open Slack app
+                window.location.href = 'slack://open';
+                // Fallback after 300ms
+                setTimeout(() => {
+                  window.open(
+                    `https://slack.com/share?text=${encodedMsg}&url=${encodeURIComponent(url)}`,
+                    '_blank'
+                  );
+                }, 300);
+              } catch (_) {
+                window.open(
+                  `https://slack.com/share?text=${encodedMsg}&url=${encodeURIComponent(url)}`,
+                  '_blank'
+                );
+              }
               break;
             case 'telegram':
-              window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}`, '_blank');
+              window.open(
+                `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodedMsg}`,
+                '_blank'
+              );
               break;
             case 'facebook':
               window.open(
@@ -183,13 +215,13 @@
               break;
             case 'whatsapp':
               window.open(
-                `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`,
+                `https://api.whatsapp.com/send?text=${encodedMsg}`,
                 '_blank'
               );
               break;
             case 'x':
               window.open(
-                `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`,
+                `https://twitter.com/intent/tweet?text=${encodedMsg}`,
                 '_blank'
               );
               break;
