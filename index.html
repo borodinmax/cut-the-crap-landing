@@ -66,7 +66,7 @@
       <div class="md:w-1/2 order-1 md:order-2">
         <div class="flex items-center space-x-3 mb-6">
           <img src="assets/Cut The Crap logo.png" alt="Cut The Crap logo" class="w-10 h-10" />
-          <h1 class="whitespace-nowrap text-[36px] md:text-[48px] font-extrabold leading-none">Cut The Crap</h1>
+          <h1 class="whitespace-nowrap text-[36px] md:text-[48px] font-bold leading-none">Cut The Crap</h1>
         </div>
 
         <p class="text-[#00000073] font-medium text-[18px] mb-6 max-w-md">
@@ -194,17 +194,14 @@
               break;
             case 'slack':
               // Attempt to open Slack app; note: works only if protocol handler is available
-              const slackUrl = `slack://channel?team=T00000000&id=1`; // generic channel deep link, may fail if no team
-              window.open(slackUrl, '_blank');
+              window.open(`slack://open`, '_blank');
               // fallback share via web
-              window.open(
-                `https://slack.com/share?text=${encodedMsg}&url=${encodeURIComponent(url)}`,
-                '_blank'
-              );
+              window.open(`https://slack.com/share?text=${encodedMsg}`, '_blank');
               hideModal();
               break;
             case 'telegram':
-              window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodedMsg}`, '_blank');
+              // send only text param to avoid duplicate link
+              window.open(`https://t.me/share/url?text=${encodedMsg}`, '_blank');
               hideModal();
               break;
             case 'facebook':
@@ -216,12 +213,4 @@
               hideModal();
               break;
             case 'x':
-              window.open(`https://twitter.com/intent/tweet?text=${encodedMsg}`, '_blank');
-              hideModal();
-              break;
-          }
-        });
-      });
-    </script>
-  </body>
-</html>
+              window.open(`https://twitter.com/intent/tweet?text=${encoded
