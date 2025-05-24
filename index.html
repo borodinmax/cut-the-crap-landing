@@ -1,93 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cut The Crap</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://rsms.me/inter/inter.css');
-    html { font-family: 'Inter', sans-serif; }
-  </style>
-</head>
-<body class="bg-white text-black font-inter">
-  <!-- Container -->
-  <div class="flex flex-col md:flex-row items-center justify-center min-h-screen px-6 md:px-16">
-    <!-- Video or GIF on the left -->
-    <div class="w-full md:w-1/2 mb-8 md:mb-0">
-      <img src="cut-the-crap-landing/assets/YOUR_VIDEO_OR_GIF_HERE.gif" alt="Demo of Cut The Crap" class="rounded-2xl shadow-md w-full" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cut The Crap – Slack Extension</title>
+    <!-- Inter font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind (Play CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              inter: ["Inter", "sans-serif"],
+            },
+            colors: {
+              body: "rgba(0,0,0,0.45)", // 45% opacity black
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      html {
+        font-family: 'Inter', sans-serif;
+      }
+      /* keyframes for toast */
+      @keyframes slideDownUp {
+        0% {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        10% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        80% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-white flex items-center justify-center p-4">
+    <!-- Toast -->
+    <div
+      id="toast"
+      class="fixed top-4 left-1/2 -translate-x-1/2 bg-black text-white rounded-full px-6 py-3 text-lg font-medium opacity-0 pointer-events-none"
+      style="animation: slideDownUp 2.5s ease forwards">
+      Link copied
     </div>
-    <!-- Project info on the right -->
-    <div class="w-full md:w-1/2 flex flex-col items-start md:pl-16">
-      <div class="flex items-center mb-4">
-        <img src="cut-the-crap-landing/assets/Cut The Crap logo.png" alt="Cut The Crap logo" class="w-10 h-10 mr-3" />
-        <h1 class="text-3xl font-bold">Cut The Crap</h1>
-      </div>
-      <p class="text-lg text-black/45 mb-6">Slack extension that turns ‘wait, what?’ into ‘got it’ — one message at a time.</p>
-      <div class="flex space-x-4">
-        <a href="YOUR_INSTALL_LINK_HERE" class="bg-black text-white font-medium text-lg px-8 py-3 rounded-xl">Install</a>
-        <button onclick="openShareModal()" class="border border-black/15 text-black font-medium text-lg px-8 py-3 rounded-xl">Share</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Share Modal -->
-  <div id="shareModal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-2xl w-72 p-6 relative">
-      <button onclick="closeShareModal()" class="absolute top-3 right-3 text-black/45 text-xl">✕</button>
-      <div class="space-y-4">
-        <button onclick="copyLink()" class="flex items-center space-x-2">
-          <img src="cut-the-crap-landing/assets/Copy icon.png" alt="Copy link" class="w-6 h-6" />
-          <span>Copy link</span>
+    <main
+      class="w-full max-w-6xl flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-16"
+    >
+      <!-- Demo media -->
+      <figure class="md:w-1/2 w-full">
+        <!-- Replace src with your gif / video poster -->
+        <video
+          src="./assets/demo.mp4"
+          poster="./assets/demo-poster.png"
+          autoplay
+          loop
+          muted
+          playsinline
+          class="w-full h-auto rounded-xl shadow"
+        ></video>
+      </figure>
+
+      <!-- Content -->
+      <section class="md:w-1/2 w-full flex flex-col items-start">
+        <!-- Logo & title -->
+        <div class="flex items-center gap-4 mb-6">
+          <img
+            src="./assets/Cut The Crap logo.png"
+            alt="Cut The Crap logo"
+            class="w-8 h-8 md:w-10 md:h-10"
+          />
+          <h1 class="text-3xl md:text-4xl font-bold">Cut The Crap</h1>
+        </div>
+
+        <!-- Description -->
+        <p class="text-body text-lg md:text-xl font-medium mb-6 md:mb-8 max-w-md">
+          Slack extension that turns ‘wait, what?’ into ‘got it’ — one message at a
+          time.
+        </p>
+
+        <!-- Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a
+            href="https://slack.com/oauth/v2/authorize?client_id=YOUR_CLIENT_ID&scope=commands"
+            class="w-40 h-12 md:w-40 md:h-12 rounded-[12px] bg-black text-white flex items-center justify-center text-lg font-medium transition-opacity hover:opacity-90"
+            >Install</a
+          >
+
+          <button
+            id="shareBtn"
+            class="w-40 h-12 md:w-40 md:h-12 rounded-[12px] border-2 border-[rgba(0,0,0,0.15)] text-lg font-medium flex items-center justify-center hover:bg-gray-50 transition-colors"
+          >
+            Share
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Share Modal -->
+    <div
+      id="shareModal"
+      class="fixed inset-0 bg-black/30 z-50 hidden items-center justify-center"
+    >
+      <div
+        class="bg-white rounded-[24px] w-[320px] p-12 flex flex-col gap-8 relative"
+      >
+        <!-- Close -->
+        <button
+          id="closeModal"
+          class="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
+        >
+          ✕
         </button>
-        <a href="https://slack.com/" target="_blank" class="flex items-center space-x-2">
-          <img src="cut-the-crap-landing/assets/Slack logo.png" alt="Slack" class="w-6 h-6" />
-          <span>Slack</span>
-        </a>
-        <a href="https://t.me/share/url?url=YOUR_LINK_HERE&text=CUT THE CRAP outta those monster Slack threads. Install now → YOUR_LINK_HERE" target="_blank" class="flex items-center space-x-2">
-          <img src="cut-the-crap-landing/assets/Telegram logo.png" alt="Telegram" class="w-6 h-6" />
-          <span>Telegram</span>
-        </a>
-        <a href="https://www.facebook.com/sharer/sharer.php?u=YOUR_LINK_HERE" target="_blank" class="flex items-center space-x-2">
-          <img src="cut-the-crap-landing/assets/Facebook logo.png" alt="Facebook" class="w-6 h-6" />
-          <span>Facebook</span>
-        </a>
-        <a href="https://api.whatsapp.com/send?text=CUT THE CRAP outta those monster Slack threads. Install now → YOUR_LINK_HERE" target="_blank" class="flex items-center space-x-2">
-          <img src="cut-the-crap-landing/assets/WhatsApp logo.png" alt="WhatsApp" class="w-6 h-6" />
-          <span>WhatsApp</span>
-        </a>
-        <a href="https://x.com/intent/tweet?text=CUT THE CRAP outta those monster Slack threads. Install now → YOUR_LINK_HERE" target="_blank" class="flex items-center space-x-2">
-          <img src="cut-the-crap-landing/assets/X logo.png" alt="X" class="w-6 h-6" />
-          <span>X</span>
-        </a>
+
+        <!-- Links -->
+        <nav class="flex flex-col gap-6 text-lg font-medium">
+          <button
+            class="flex items-center gap-4 share-item"
+            data-action="copy"
+          >
+            <img src="./assets/Copy icon.png" class="w-6 h-6" alt="Copy icon" />
+            Copy link
+          </button>
+
+          <a
+            href="https://slack.com/apps"
+            class="flex items-center gap-4 share-item"
+            target="_blank"
+            rel="noopener"
+          >
+            <img src="./assets/Slack logo.png" class="w-6 h-6" alt="Slack" />
+            Slack
+          </a>
+
+          <a
+            id="telegramShare"
+            class="flex items-center gap-4 share-item"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="./assets/Telegram logo.png"
+              class="w-6 h-6"
+              alt="Telegram"
+            />
+            Telegram
+          </a>
+
+          <a
+            id="facebookShare"
+            class="flex items-center gap-4 share-item"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="./assets/Facebook logo.png"
+              class="w-6 h-6"
+              alt="Facebook"
+            />
+            Facebook
+          </a>
+
+          <a
+            id="whatsappShare"
+            class="flex items-center gap-4 share-item"
+            target="_blank"
+            rel="noopener"
+          >
+            <img
+              src="./assets/WhatsApp logo.png"
+              class="w-6 h-6"
+              alt="WhatsApp"
+            />
+            WhatsApp
+          </a>
+
+          <a
+            id="xShare"
+            class="flex items-center gap-4 share-item"
+            target="_blank"
+            rel="noopener"
+          >
+            <img src="./assets/X logo.png" class="w-6 h-6" alt="X" />
+            X
+          </a>
+        </nav>
       </div>
     </div>
-  </div>
 
-  <!-- Link Copied Toast -->
-  <div id="linkCopiedToast" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black text-white font-medium rounded-full px-6 py-2 opacity-0 transition-opacity duration-300">
-    Link copied
-  </div>
+    <script>
+      const link = "https://borodinmax.github.io/cut-the-crap-landing/";
+      const shareText = `CUT THE CRAP outta those monster Slack threads. Install now → ${link}`;
 
-  <script>
-    function openShareModal() {
-      document.getElementById('shareModal').classList.remove('hidden');
-    }
+      // Elements
+      const shareBtn = document.getElementById("shareBtn");
+      const modal = document.getElementById("shareModal");
+      const closeModal = document.getElementById("closeModal");
+      const toast = document.getElementById("toast");
 
-    function closeShareModal() {
-      document.getElementById('shareModal').classList.add('hidden');
-    }
+      // Share anchors
+      const telegram = document.getElementById("telegramShare");
+      const facebook = document.getElementById("facebookShare");
+      const whatsapp = document.getElementById("whatsappShare");
+      const xShare = document.getElementById("xShare");
 
-    function copyLink() {
-      const link = 'YOUR_LINK_HERE';
-      navigator.clipboard.writeText(link).then(() => {
-        const toast = document.getElementById('linkCopiedToast');
-        toast.classList.remove('opacity-0');
-        setTimeout(() => {
-          toast.classList.add('opacity-0');
-        }, 1500);
+      telegram.href =
+        "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent(shareText);
+      facebook.href =
+        "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(link);
+      whatsapp.href =
+        "https://wa.me/?text=" + encodeURIComponent(shareText);
+      xShare.href =
+        "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText);
+
+      // Open modal
+      shareBtn.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
       });
-    }
-  </script>
-</body>
+
+      // Close modal
+      closeModal.addEventListener("click", () => {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      });
+
+      // Click outside to close
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeModal.click();
+        }
+      });
+
+      // Copy link handler
+      document.querySelector('[data-action="copy"]').addEventListener("click", () => {
+        navigator.clipboard.writeText(link).then(showToast);
+      });
+
+      function showToast() {
+        toast.style.opacity = "1";
+        toast.addEventListener(
+          "animationend",
+          () => {
+            toast.style.opacity = "0";
+          },
+          { once: true }
+        );
+      }
+    </script>
+  </body>
 </html>
