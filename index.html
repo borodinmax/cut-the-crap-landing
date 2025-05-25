@@ -1,117 +1,247 @@
 <!DOCTYPE html>
-<html lang="en" class="bg-white">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cut The Crap</title>
-  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    html { font-family: 'Inter', sans-serif; }
-    .toast-animate {
-      animation: toast-in 0.4s cubic-bezier(.4,0,.2,1), toast-out 0.4s 1.6s cubic-bezier(.4,0,.2,1) forwards;
-    }
-    @keyframes toast-in { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    @keyframes toast-out { to { transform: translateY(-100%); opacity: 0; } }
-  </style>
-</head>
-<body class="min-h-screen flex items-center justify-center bg-white">
-  <div class="w-full max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between px-4 py-12">
-    <!-- Product GIF/Video -->
-    <div class="w-full md:w-1/2 flex justify-center mb-8 md:mb-0">
-      <img src="product-demo.gif" alt="Product demo" class="rounded-2xl w-full max-w-md shadow-lg" />
-    </div>
-    <!-- Right Block -->
-    <div class="w-full md:w-1/2 flex flex-col items-center md:items-start">
-      <div class="flex items-center mb-4">
-        <img src="Cut The Crap logo.png" alt="Logo" class="w-10 h-10 mr-3"/>
-        <span class="text-4xl font-bold text-black">Cut The Crap</span>
-      </div>
-      <p class="text-xl text-gray-500 mb-8 text-center md:text-left max-w-md">
-        Slack extension that turns ‘wait, what?’ into ‘got it’ — one message at a time.
-      </p>
-      <div class="flex flex-col md:flex-row gap-4 w-full max-w-xs">
-        <a href="https://slack.com/apps" target="_blank" class="w-full md:w-auto bg-black text-white text-xl font-medium py-3 rounded-2xl text-center transition hover:bg-gray-900">Install</a>
-        <button id="shareBtn" class="w-full md:w-auto border border-black text-black text-xl font-medium py-3 rounded-2xl text-center transition hover:bg-gray-100">Share</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Share Modal -->
-  <div id="shareModal" class="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center hidden">
-    <div class="bg-white rounded-2xl p-6 w-80 relative">
-      <button id="closeModal" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-black">&times;</button>
-      <div class="flex flex-col gap-4 mt-2">
-        <button class="share-option flex items-center gap-3 py-2" data-type="copy">
-          <img src="Copy icon.png" class="w-6 h-6" alt="Copy link"/><span class="text-lg">Copy link</span>
-        </button>
-        <button class="share-option flex items-center gap-3 py-2" data-type="slack">
-          <img src="Slack logo.png" class="w-6 h-6" alt="Slack"/><span class="text-lg">Slack</span>
-        </button>
-        <button class="share-option flex items-center gap-3 py-2" data-type="telegram">
-          <img src="Telegram logo.png" class="w-6 h-6" alt="Telegram"/><span class="text-lg">Telegram</span>
-        </button>
-        <button class="share-option flex items-center gap-3 py-2" data-type="facebook">
-          <img src="Facebook logo.png" class="w-6 h-6" alt="Facebook"/><span class="text-lg">Facebook</span>
-        </button>
-        <button class="share-option flex items-center gap-3 py-2" data-type="whatsapp">
-          <img src="WhatsApp logo.png" class="w-6 h-6" alt="WhatsApp"/><span class="text-lg">WhatsApp</span>
-        </button>
-        <button class="share-option flex items-center gap-3 py-2" data-type="x">
-          <img src="X logo.png" class="w-6 h-6" alt="X"/><span class="text-lg">X</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-black text-white text-2xl font-medium px-8 py-3 rounded-full shadow-lg opacity-0 pointer-events-none">
-    Link copied
-  </div>
-
-  <script>
-    // Modal logic
-    const shareBtn = document.getElementById('shareBtn');
-    const shareModal = document.getElementById('shareModal');
-    const closeModal = document.getElementById('closeModal');
-    const toast = document.getElementById('toast');
-    const shareOptions = document.querySelectorAll('.share-option');
-    const shareUrl = window.location.href;
-    const shareMsg = `CUT THE CRAP outta those monster Slack threads. Install now → ${shareUrl}`;
-
-    shareBtn.onclick = () => shareModal.classList.remove('hidden');
-    closeModal.onclick = () => shareModal.classList.add('hidden');
-    shareModal.onclick = e => { if (e.target === shareModal) shareModal.classList.add('hidden'); };
-
-    function showToast() {
-      toast.classList.remove('opacity-0', 'pointer-events-none');
-      toast.classList.add('toast-animate');
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'pointer-events-none');
-        toast.classList.remove('toast-animate');
-      }, 2000);
-    }
-
-    shareOptions.forEach(btn => {
-      btn.onclick = () => {
-        const type = btn.dataset.type;
-        if (type === 'copy') {
-          navigator.clipboard.writeText(shareUrl);
-          shareModal.classList.add('hidden');
-          showToast();
-        } else if (type === 'slack') {
-          window.open('https://slack.com/', '_blank');
-        } else if (type === 'telegram') {
-          window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareMsg)}`, '_blank');
-        } else if (type === 'facebook') {
-          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
-        } else if (type === 'whatsapp') {
-          window.open(`https://wa.me/?text=${encodeURIComponent(shareMsg)}`, '_blank');
-        } else if (type === 'x') {
-          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareMsg)}`, '_blank');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cut The Crap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
         }
-      }
-    });
-  </script>
+        /* For smooth toast animation */
+        .toast-hidden {
+            transform: translateY(-150%);
+            opacity: 0;
+        }
+        .toast-visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 bg-black text-white py-3 px-6 rounded-lg shadow-md transition-all duration-300 ease-in-out toast-hidden z-[100]">
+        Link copied
+    </div>
+
+    <div class="container mx-auto min-h-screen flex items-center justify-center p-4 py-8 md:py-12">
+        <div class="w-full max-w-lg md:max-w-5xl bg-white md:bg-transparent shadow-xl md:shadow-none rounded-2xl md:rounded-none">
+            <div class="md:flex md:space-x-8 md:bg-white md:rounded-2xl md:shadow-xl md:p-0">
+                <div class="md:w-1/2 p-4 md:p-0">
+                    <img src="/assets/product-showcase.png" alt="Product Showcase" class="rounded-lg md:rounded-l-2xl md:rounded-r-none shadow-lg w-full h-auto object-cover aspect-[2056/1330]">
+                </div>
+
+                <div class="md:w-1/2 bg-white p-6 sm:p-8 rounded-b-2xl md:rounded-l-none md:rounded-r-2xl flex flex-col justify-center">
+                    <div class="flex items-center mb-5 sm:mb-6">
+                        <img src="/assets/Cut The Crap logo.png" alt="Cut The Crap Logo" class="h-10 w-10 sm:h-12 sm:w-12 mr-3 sm:mr-4">
+                        <h1 class="text-3xl sm:text-4xl font-bold text-black">Cut The Crap</h1>
+                    </div>
+
+                    <p class="text-gray-700 text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed">
+                        Slack extension that turns ‘wait, what?’ into ‘got it’ — one message at a time.
+                    </p>
+
+                    <button id="installButton" class="w-full bg-black text-white py-3 px-6 rounded-lg text-lg font-medium mb-3 sm:mb-4 hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2">
+                        Install
+                    </button>
+                    <button id="shareButton" class="w-full bg-white text-black border border-black py-3 px-6 rounded-lg text-lg font-medium hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2">
+                        Share
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="shareModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50 transition-opacity duration-300 ease-in-out opacity-0">
+        <div id="modalContent" class="bg-white p-5 sm:p-6 rounded-2xl shadow-xl w-full max-w-xs sm:max-w-sm relative transform scale-95 transition-all duration-300 ease-in-out">
+            <button id="closeModalButton" class="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <ul class="mt-6">
+                <li class="mb-2">
+                    <a href="#" id="copyLinkButton" class="flex items-center p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                        <img src="/assets/Copy icon.png" alt="Copy Link" class="w-6 h-6 mr-4">
+                        <span class="text-lg text-black">Copy link</span>
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a href="#" id="shareSlackButton" target="_blank" class="flex items-center p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                        <img src="/assets/Slack logo.png" alt="Slack" class="w-6 h-6 mr-4">
+                        <span class="text-lg text-black">Slack</span>
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a href="#" id="shareTelegramButton" target="_blank" class="flex items-center p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                        <img src="/assets/Telegram logo.png" alt="Telegram" class="w-6 h-6 mr-4">
+                        <span class="text-lg text-black">Telegram</span>
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a href="#" id="shareFacebookButton" target="_blank" class="flex items-center p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                        <img src="/assets/Facebook logo.png" alt="Facebook" class="w-6 h-6 mr-4">
+                        <span class="text-lg text-black">Facebook</span>
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a href="#" id="shareWhatsAppButton" target="_blank" class="flex items-center p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                        <img src="/assets/WhatsApp logo.png" alt="WhatsApp" class="w-6 h-6 mr-4">
+                        <span class="text-lg text-black">WhatsApp</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="shareXButton" target="_blank" class="flex items-center p-3 hover:bg-gray-100 rounded-lg transition-colors">
+                        <img src="/assets/X logo.png" alt="X" class="w-6 h-6 mr-4">
+                        <span class="text-lg text-black">X</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const shareButton = document.getElementById('shareButton');
+            const shareModal = document.getElementById('shareModal');
+            const modalContent = document.getElementById('modalContent');
+            const closeModalButton = document.getElementById('closeModalButton');
+            const toast = document.getElementById('toast');
+            const installButton = document.getElementById('installButton');
+
+            const copyLinkButton = document.getElementById('copyLinkButton');
+            const shareSlackButton = document.getElementById('shareSlackButton');
+            const shareTelegramButton = document.getElementById('shareTelegramButton');
+            const shareFacebookButton = document.getElementById('shareFacebookButton');
+            const shareWhatsAppButton = document.getElementById('shareWhatsAppButton');
+            const shareXButton = document.getElementById('shareXButton');
+
+            // --- CONFIGURABLE VALUES ---
+            const slackInstallLink = "YOUR_SLACK_EXTENSION_INSTALL_URL"; // <-- ЗАМЕНИТЕ НА ВАШУ ССЫЛКУ ДЛЯ УСТАНОВКИ
+            const productLinkToShare = "YOUR_PRODUCT_PAGE_LINK"; // <-- ЗАМЕНИТЕ НА ССЫЛКУ, КОТОРОЙ НУЖНО ДЕЛИТЬСЯ (или window.location.href)
+            const shareMessageBase = "CUT THE CRAP outta those monster Slack threads. Install now →";
+            // --- END CONFIGURABLE VALUES ---
+
+            const fullShareMessageWithLink = `${shareMessageBase} ${productLinkToShare}`;
+            const encodedFullShareMessageWithLink = encodeURIComponent(fullShareMessageWithLink);
+            const encodedProductLink = encodeURIComponent(productLinkToShare);
+            const encodedShareMessageBase = encodeURIComponent(shareMessageBase);
+
+
+            function showToast() {
+                toast.classList.remove('toast-hidden');
+                toast.classList.add('toast-visible');
+                setTimeout(() => {
+                    toast.classList.remove('toast-visible');
+                    toast.classList.add('toast-hidden');
+                }, 3000);
+            }
+
+            function openModal() {
+                shareModal.classList.remove('hidden');
+                setTimeout(() => { // allow display block to take effect for transition
+                    shareModal.classList.remove('opacity-0');
+                    modalContent.classList.remove('scale-95');
+                }, 10);
+            }
+
+            function closeModal() {
+                shareModal.classList.add('opacity-0');
+                modalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    shareModal.classList.add('hidden');
+                }, 300); // match transition duration
+            }
+
+            shareButton.addEventListener('click', openModal);
+            closeModalButton.addEventListener('click', closeModal);
+            shareModal.addEventListener('click', (event) => {
+                if (event.target === shareModal) { // Click outside modal content
+                    closeModal();
+                }
+            });
+
+            installButton.addEventListener('click', () => {
+                if (slackInstallLink === "YOUR_SLACK_EXTENSION_INSTALL_URL") {
+                    alert("Please configure the Slack install link in the script.");
+                } else {
+                    window.location.href = slackInstallLink;
+                }
+            });
+
+            copyLinkButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (productLinkToShare === "YOUR_PRODUCT_PAGE_LINK") {
+                     alert("Please configure the product link to share in the script.");
+                     return;
+                }
+                navigator.clipboard.writeText(fullShareMessageWithLink)
+                    .then(() => {
+                        showToast();
+                        closeModal();
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        alert('Failed to copy link. Please try again or copy manually.');
+                    });
+            });
+
+            shareSlackButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Slack sharing via web is typically just a link to Slack.
+                // For pre-filled messages, it often requires deeper integration or specific slack:// URI schemes
+                // which might not be universally supported or simple. The request was to "open slack site".
+                window.open('https://slack.com/', '_blank');
+                closeModal();
+            });
+
+            shareTelegramButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                 if (productLinkToShare === "YOUR_PRODUCT_PAGE_LINK") {
+                     alert("Please configure the product link to share in the script.");
+                     return;
+                }
+                const telegramUrl = `https://t.me/share/url?url=${encodedProductLink}&text=${encodedShareMessageBase}`;
+                window.open(telegramUrl, '_blank');
+                closeModal();
+            });
+
+            shareFacebookButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                 if (productLinkToShare === "YOUR_PRODUCT_PAGE_LINK") {
+                     alert("Please configure the product link to share in the script.");
+                     return;
+                }
+                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedProductLink}&quote=${encodedShareMessageBase}`;
+                window.open(facebookUrl, '_blank');
+                closeModal();
+            });
+
+            shareWhatsAppButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                 if (productLinkToShare === "YOUR_PRODUCT_PAGE_LINK") {
+                     alert("Please configure the product link to share in the script.");
+                     return;
+                }
+                const whatsAppUrl = `https://api.whatsapp.com/send?text=${encodedFullShareMessageWithLink}`;
+                window.open(whatsAppUrl, '_blank');
+                closeModal();
+            });
+
+            shareXButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                 if (productLinkToShare === "YOUR_PRODUCT_PAGE_LINK") {
+                     alert("Please configure the product link to share in the script.");
+                     return;
+                }
+                const xUrl = `https://twitter.com/intent/tweet?url=${encodedProductLink}&text=${encodedShareMessageBase}`;
+                window.open(xUrl, '_blank');
+                closeModal();
+            });
+        });
+    </script>
 </body>
 </html>
